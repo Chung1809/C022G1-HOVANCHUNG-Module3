@@ -44,7 +44,7 @@ select *from product;
 select * from order_1;
 select* from customer;
 select order_1.o_id,order_1.o_date,order_1.o_total_price from order_1;
-select distinct c.c_id , p.p_name from customer c right join order_1 o on c.c_id = o.c_id
+select distinct c.c_name, c.c_id , p.p_name from customer c right join order_1 o on c.c_id = o.c_id
  right join order_detail o_d on o.o_id = o_d.o_id
 join product p on p.p_id = o_d.p_id;
 select c.c_name from customer c left join order_1 o on c.c_id = o.c_id where o.c_id is null;
