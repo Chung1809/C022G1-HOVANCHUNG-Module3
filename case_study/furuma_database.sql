@@ -1,4 +1,5 @@
 create database case_study_furama;
+drop database case_study_furama;
 use case_study_furama;
 create table loai_khach(
 ma_loai_khach int primary key auto_increment,
@@ -165,12 +166,12 @@ values
 ('2021-05-25','2021-05-27',0,7,10,1)
 ;
 select*from hop_dong_chi_tiet;
-insert into hop_dong_chi_tiet values(null,4,2,5);
+insert into hop_dong_chi_tiet values(null,2,4,5);
 insert into hop_dong_chi_tiet(ma_hop_dong,ma_dich_vu_di_kem,so_luong)
 values
 (2,5,8),
 (2,6,15),
-(1,1,1),
+(3,1,1),
 (3,2,11),
 (1,3,1),
 (1,2,2),
@@ -211,19 +212,120 @@ join dich_vu_di_kem d_v_d_k on d_v_d_k.ma_dich_vu_di_kem = h_d_c_t.ma_dich_vu_di
 group by h_d.ma_hop_dong
 order by k_h.ma_khach_hang;
 -- Task 6--
-select d_v.ma_dich_vu,d_v.ten_dich_vu,d_v.dien_tich,d_v.chi_phi_thue,l_d_v.ten_loai_dich_vu 
+select distinct d_v.ma_dich_vu,d_v.ten_dich_vu,d_v.dien_tich,d_v.chi_phi_thue,l_d_v.ten_loai_dich_vu 
 from dich_vu d_v join loai_dich_vu l_d_v on d_v.ma_loai_dich_vu = l_d_v.ma_loai_dich_vu
 join hop_dong h_d on h_d.ma_dich_vu = d_v.ma_dich_vu
 where h_d.ma_dich_vu not in(select ma_dich_vu from hop_dong h_d where year(h_d.ngay_lam_hop_dong) = "2021" and quarter(h_d.ngay_lam_hop_dong)=1 );
 -- join bảng dịch vụ với bảng loại dịch vụ để hiển thị tên loại dịch vụ trên select
 -- join tiếp bảng hợp đồng, điều kiện ở where là mã dịch vụ ko nằm trong truy vấn các dịch vụ đã đặt trong năm 2021 và quý 1
 -- Task 7--
-select d_v.ma_dich_vu,d_v.ten_dich_vu,d_v.dien_tich,d_v.so_luong_nguoi_toi_da,d_v.chi_phi_thue,l_d_v.ten_loai_dich_vu from
+select d_v.ma_dich_vu,d_v.ten_dich_vu,d_v.dien_tich,d_v.so_luong_nguoi_toi_da,d_v.chi_phi_thue,l_d_v.ten_loai_dich_vu,h_d.ngay_lam_hop_dong from
 dich_vu d_v join loai_dich_vu l_d_v on d_v.ma_loai_dich_vu = l_d_v.ma_loai_dich_vu
 join hop_dong h_d on h_d.ma_dich_vu = d_v.ma_dich_vu
-where h_d.ma_dich_vu not in(select ma_dich_vu from hop_dong h_d where year(h_d.ngay_lam_hop_dong) != "2020" )
+where h_d.ma_dich_vu not in(select ma_dich_vu from hop_dong h_d where year(h_d.ngay_lam_hop_dong) != "2020" and year(h_d.ngay_lam_hop_dong) = "2021" )
 group by d_v.ma_dich_vu
 order by h_d.ma_dich_vu;
+
+-- Task 8--
+select distinct ho_ten from khach_hang;
+select ho_ten from khach_hang group by ho_ten;
+select ho_ten from khach_hang
+union 
+select ho_ten from khach_hang;
+-- Task 9 --
+select  month(ngay_lam_hop_dong) as thang  ,count(*) as so_luong_khach_hang from hop_dong 
+where year(ngay_lam_hop_dong) =2021
+group by(  month(ngay_lam_hop_dong))
+order by thang;
+
+-- Task 10--
+select h_d.ma_hop_dong,h_d.ngay_lam_hop_dong,h_d.ngay_ket_thuc,h_d.tien_dat_coc,sum(h_d_c_t.so_luong) as so_luong_dich_vu_di_kem
+from hop_dong h_d  left join hop_dong_chi_tiet h_d_c_t on h_d.ma_hop_dong=h_d_c_t.ma_hop_dong
+group by h_d.ma_hop_dong
+order by h_d.ma_hop_dong;
+
+-- Task 11 --
+select d_v_d_k.ma_dich_vu_di_kem , d_v_d_k.ten_dich_vu_di_kem 
+from dich_vu_di_kem d_v_d_k
+join hop_dong_chi_tiet h_d_c_t on d_v_d_k.ma_dich_vu_di_kem = h_d_c_t.ma_dich_vu_di_kem
+join hop_dong h_d on h_d.ma_hop_dong = h_d_c_t.ma_hop_dong
+join khach_hang k_h on k_h.ma_khach_hang = h_d.ma_khach_hang
+join loai_khach l_k on (l_k.ma_loai_khach = 1) = k_h.ma_loai_khach
+where k_h.dia_chi like "%Quảng Ngãi" or "%Vinh"
+group by l_k.ma_loai_khach
+order by d_v_d_k.ma_dich_vu_di_kem;
+
+-- Task 12--
+select h_d.ma_hop_dong,n_v.ho_ten,k_h.ho_ten,k_h.so_dien_thoai,d_v.ten_dich_vu,sum(coalesce(h_d_c_t.so_luong,0)) as so_luong_dich_vu_di_kem,h_d.tien_dat_coc
+from hop_dong h_d left join khach_hang k_h   on h_d.ma_khach_hang = k_h.ma_khach_hang
+left join nhan_vien n_v on n_v.ma_nhan_vien = h_d.ma_nhan_vien
+left join hop_dong_chi_tiet h_d_c_t on h_d_c_t.ma_hop_dong = h_d.ma_hop_dong
+join dich_vu d_v on d_v.ma_dich_vu = h_d.ma_dich_vu
+where ( quarter(h_d.ngay_lam_hop_dong) = 4 and year(h_d.ngay_lam_hop_dong) = 2020 ) and h_d.ma_hop_dong
+not in
+(select h_d.ma_hop_dong
+from hop_dong h_d  left join khach_hang k_h on h_d.ma_khach_hang = k_h.ma_khach_hang
+left join nhan_vien n_v on n_v.ma_nhan_vien = h_d.ma_nhan_vien
+left join hop_dong_chi_tiet h_d_c_t on h_d_c_t.ma_hop_dong = h_d.ma_hop_dong
+join dich_vu d_v on d_v.ma_dich_vu = h_d.ma_dich_vu
+where ( quarter(h_d.ngay_lam_hop_dong) in(1,2) and year(h_d.ngay_lam_hop_dong)= 2021))
+group by h_d.ma_hop_dong;
+
+
+-- Task 13--
+select d_v_d_k.ma_dich_vu_di_kem ,d_v_d_k.ten_dich_vu_di_kem, sum(h_d_c_t.so_luong) as so_luong_dich_vu_di_kem from
+hop_dong h_d join khach_hang k_h on h_d.ma_khach_hang=k_h.ma_khach_hang
+join hop_dong_chi_tiet h_d_c_t on h_d_c_t.ma_hop_dong = h_d.ma_hop_dong
+join dich_vu_di_kem d_v_d_k on d_v_d_k.ma_dich_vu_di_kem = h_d_c_t.ma_dich_vu_di_kem
+group by d_v_d_k.ma_dich_vu_di_kem
+order by sum(h_d_c_t.so_luong) desc limit 0,2;
+
+-- Task 14 --
+select h_d.ma_hop_dong,l_d_v.ten_loai_dich_vu,d_v_d_k.ten_dich_vu_di_kem,count(d_v_d_k.ma_dich_vu_di_kem) as so_lan_su_dung
+from hop_dong h_d join dich_vu d_v on h_d.ma_dich_vu=d_v.ma_dich_vu
+join loai_dich_vu l_d_v on l_d_v.ma_loai_dich_vu = d_v.ma_loai_dich_vu
+join hop_dong_chi_tiet h_d_c_t on h_d_c_t.ma_hop_dong = h_d.ma_hop_dong
+join dich_vu_di_kem d_v_d_k on d_v_d_k.ma_dich_vu_di_kem = h_d_c_t.ma_dich_vu_di_kem
+group by d_v_d_k.ma_dich_vu_di_kem
+having count(d_v_d_k.ma_dich_vu_di_kem) = 1
+order by h_d.ma_hop_dong;
+
+-- Task 15 --
+select n_v.ma_nhan_vien,n_v.ho_ten,t_d.ten_trinh_do,b_p.ten_bo_phan,n_v.so_dien_thoai,n_v.dia_chi
+from nhan_vien n_v join bo_phan b_p on n_v.ma_bo_phan = b_p.ma_bo_phan
+join trinh_do t_d on t_d.ma_trinh_do = n_v.ma_trinh_do
+join hop_dong h_d on h_d.ma_nhan_vien = n_v.ma_nhan_vien
+where  year(h_d.ngay_lam_hop_dong) between 2020 and 2021
+group by n_v.ma_nhan_vien
+having count(h_d.ngay_lam_hop_dong) <=3
+order by n_v.ma_nhan_vien;
+
+-- Task 16--
+delete from nhan_vien n_v
+where n_v.ma_nhan_vien not in(select n_v.ma_nhan_vien from hop_dong h_d where year(h_d.ngay_lam_hop_dong) between 2019 and 2021);
+
+-- Task 17 --
+update khach_hang k_h set l_k.ma_loai_khach = 1 ;
+
+-- Task 18 --
+delete  khach_hang 
+from khach_hang k_h join hop_dong h_d on k_h.ma_khach_hang = h_d.ma_khach_hang
+where year(h_d.ngay_lam_hop_dong) <2021;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
  
 
 
