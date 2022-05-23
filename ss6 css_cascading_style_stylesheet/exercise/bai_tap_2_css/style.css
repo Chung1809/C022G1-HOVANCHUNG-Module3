@@ -1,0 +1,39 @@
+h1{
+    color: black;
+    text-align: left;
+    font-family: Arial;
+    font-size: 50px;
+    text-indent: 30px;
+
+}
+p {
+    color: black;
+    margin-top: 5px;
+    text-align: left;
+    font-family: Arial;
+    font-size: 25px;
+    text-indent: 50px;
+}
+#id3{
+    color: black;
+    text-align: left;
+    font-family: Arial;
+    font-size: 25px;
+    text-indent: 50px;
+}
+#id1{
+    font-family: Arial;
+    color: black;
+}
+.id2{
+    font-family: Arial;
+    color: blue;
+}
+#id4{
+    font-family: Arial;
+    color: red;
+}
+
+
+
+
