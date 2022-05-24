@@ -304,34 +304,41 @@ order by n_v.ma_nhan_vien;
 delete from nhan_vien n_v
 where n_v.ma_nhan_vien not in(select n_v.ma_nhan_vien from hop_dong h_d where year(h_d.ngay_lam_hop_dong) between 2019 and 2021);
 
--- Task 17 --
-update khach_hang k_h set l_k.ma_loai_khach = 1 ;
 
--- Task 18 --
-delete  khach_hang 
-from khach_hang k_h join hop_dong h_d on k_h.ma_khach_hang = h_d.ma_khach_hang
-where year(h_d.ngay_lam_hop_dong) <2021;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- Task 17--
+update khach_hang 
+set ma_loai_khach = 1
+where ma_khach_hang 
+in(select ma_khach_hang
+from
+(select k_h.ma_khach_hang,k_h.ho_ten,l_k.ma_loai_khach  from khach_hang k_h 
+ left join hop_dong h_d on k_h.ma_khach_hang = h_d.ma_khach_hang
+ left join loai_khach l_k on l_k.ma_loai_khach = k_h.ma_loai_khach
+ left join dich_vu d_v on h_d.ma_dich_vu = d_v.ma_dich_vu
+ left join hop_dong_chi_tiet h_d_c_t on h_d_c_t.ma_hop_dong = h_d.ma_hop_dong
+ left join dich_vu_di_kem d_v_d_k on d_v_d_k.ma_dich_vu_di_kem = h_d_c_t.ma_dich_vu_di_kem
+ where year(h_d.ngay_lam_hop_dong) = 2021 and l_k.ma_loai_khach = 2
+ group by k_h.ma_khach_hang
+ having (sum((d_v.chi_phi_thue + coalesce((h_d_c_t.so_luong*d_v_d_k.gia),0))) > 10000000))as ma_loai_khach);
+ 
+ select*from khach_hang;
+ select*from loai_khach;
+ select*from hop_dong;
+ 
+ -- Task 18--
  
  
+ -- Task 19 --
+ create view so_luong as
+ select d_v_d_k.ma_dich_vu_di_kem ,d_v_d_k.ten_dich_vu_di_kem,d_v_d_k.gia,h_d_c_t.so_luong, h_d.ma_hop_dong from hop_dong_chi_tiet h_d_c_t
+ join hop_dong h_d on h_d_c_t.ma_hop_dong = h_d.ma_hop_dong
+ join dich_vu_di_kem d_v_d_k on d_v_d_k.ma_dich_vu_di_kem = h_d_c_t.ma_dich_vu_di_kem
+ join dich_vu d_v on d_v.ma_dich_vu = h_d.ma_dich_vu
+ where h_d_c_t.so_luong > 10 and year(h_d.ngay_lam_hop_dong) = 2020
+ group by h_d_c_t.so_luong;
+ update dich_vu_di_kem d_v_d_k
+ set d_v_d_k.gia = d_v_d_k.gia*2
+ where d_v_d_k.ma_dich_vu_di_kem in(select d_v_d_k.ma_dich_vu_di_kem from so_luong);
+ 
 
-
-
-
-
-
-
-
+ 

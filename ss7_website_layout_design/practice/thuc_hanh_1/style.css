@@ -1,0 +1,13 @@
+.id1{
+    margin: 0 auto;
+    border: 1em;
+    padding: 1em;
+    width: 800px;
+    height: 250px;
+    border-color: chartreuse aqua blue blueviolet;
+    border-style: solid;
+}
+p{
+    border: 3px dotted darkred;
+    padding: 10px;
+}

@@ -1,0 +1,76 @@
+@media only screen and (max-width: 776px) {
+    .col-1 {width: 8.33%;}
+    .col-2 {width: 16.66%;}
+    .col-3 {width: 25%;}
+    .col-4 {width: 33.33%;}
+    .col-5 {width: 41.66%;}
+    .col-6 {width: 50%;}
+    .col-7 {width: 58.33%;}
+    .col-8 {width: 66.66%;}
+    .col-9 {width: 75%;}
+    .col-10 {width: 83.33%;}
+    .col-11 {width: 91.66%;}
+    .col-12 {width: 100%;}
+
+}
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+.row{
+    display: flex;
+    flex-wrap: wrap;
+}
+body{
+    font-family: Arial;
+    font-size: 20px;
+}
+*{
+    box-sizing: border-box;
+}
+ul li {
+    display: inline-block;
+    margin: 15px;
+}
+li:hover{
+   color: red;
+}
+.id1{
+    padding: 0;
+    background-color: bisque;
+    margin: 0;
+}
+.id2{
+    text-align: center;
+
+}
+
+.id4{
+    text-align: center;
+    background-color: bisque;
+}
+.id5{
+    background-color: antiquewhite;
+     padding: 70px;
+}
+.id6{
+    height: 15px;
+    margin: 15px;
+}
+.id7{
+    width: 200px;
+    height: 100px;
+    margin: 15px;
+    border-style: solid;
+    text-align: center;
+
+
+}
