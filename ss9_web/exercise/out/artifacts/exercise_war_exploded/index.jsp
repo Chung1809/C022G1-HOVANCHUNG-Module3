@@ -43,7 +43,7 @@
          <input class="id3" type="text" name="price">
        </div>
        <div class="id2">
-         <label style="margin: 25px 25px 25px 25px;">Discount Percent</label>
+         <label >Discount Percent</label>
          <input class="id3" type="text" name="percent">
        </div>
        <div class="id2">
