@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 @WebServlet(name = "ProductServlet", urlPatterns = "/product")
 public class ProductServlet extends HttpServlet {
@@ -51,11 +52,11 @@ public class ProductServlet extends HttpServlet {
             message = "product with name: " + name + " is not exist !";
             request.setAttribute("message", message);
         } else {
-            request.setAttribute("message", message);
-            request.setAttribute("productFindList", product);
+            request.setAttribute("message", null);
+            request.setAttribute("productList", product);
         }
             try {
-                request.getRequestDispatcher("/view/search.jsp").forward(request,response);
+                request.getRequestDispatcher("/view/list.jsp").forward(request,response);
             } catch (ServletException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -72,7 +73,7 @@ public class ProductServlet extends HttpServlet {
         if(product == null){
             request.getRequestDispatcher("/view/error-404.jsp");
         }else {
-            productManagement.remove(idIndex);
+            productManagement.remove(idIndex-1);
             request.setAttribute("message","Xoá thành công");
             try {
                 request.getRequestDispatcher("view/delete.jsp").forward(request,response);
@@ -101,13 +102,11 @@ public class ProductServlet extends HttpServlet {
             product.setProducer(producer);
             productManagement.update(id,product);
             request.setAttribute("productList",product);
-            request.setAttribute("message","Đã chỉnh sửa thành công");
+            request.setAttribute("message","Đ ã chỉnh sửa thành công");
 
 
             try {
-                request.getRequestDispatcher("/view/edit.jsp").forward(request,response);
-            } catch (ServletException e) {
-                e.printStackTrace();
+                response.sendRedirect("product");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -188,6 +187,7 @@ public class ProductServlet extends HttpServlet {
 
     private void showFormUpdate(HttpServletRequest request, HttpServletResponse response) {
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("view/edit.jsp");
+        request.setAttribute("id", request.getParameter("id"));
         try {
             requestDispatcher.forward(request,response);
         } catch (ServletException e) {

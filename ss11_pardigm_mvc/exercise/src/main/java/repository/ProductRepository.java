@@ -9,11 +9,11 @@ public class ProductRepository implements IProductRepository {
 
     public static List<Product> products = new ArrayList<>();
       static {
-          products.add(new Product(1,"Áo",500000,"Hàng new","Nike"));
-          products.add(new Product(2,"Quần",600000,"Hàng like new","Nike"));
-          products.add (new Product(3,"Bánh kẹo",700000,"Hàng new","Thăng Long"));
-          products.add(new Product(4,"Sữa",800000,"Hàng new","Cô gái Hà Lan"));
-          products.add (new Product(5,"Giày ",900000,"Hàng new","Nike"));
+          products.add(new Product(1,"Iphone",500000,"Hàng new","Iphone"));
+          products.add(new Product(2,"Samsung",600000,"Hàng like new","Samsung"));
+          products.add (new Product(3,"Oppo",700000,"Hàng new","Oppo"));
+          products.add(new Product(4,"Vivo",800000,"Hàng new","Vivo"));
+          products.add (new Product(5,"Nokia ",900000,"Hàng new","Nokia"));
       }
 
 
@@ -40,7 +40,7 @@ public class ProductRepository implements IProductRepository {
 
     @Override
     public void update(int id, Product product) {
-          products.add(id,product);
+          products.set(id,product);
 
     }
 
@@ -51,6 +51,10 @@ public class ProductRepository implements IProductRepository {
 
     @Override
     public Product findById(int id) {
-        return findAll().get(id);
+        if(id>0&& id < products.size()){
+            return products.get(id);
+        }else {
+            return null;
+        }
     }
 }

@@ -18,27 +18,28 @@
     <p>${mess}</p>
 </c:if>
 <form action="/product?action=edit" method="post">
+    <input type="hidden" name="id"value="<c:out value='${id}' />" >
     <table>
 
 
         <tr>
             <td>Name</td>
-            <td><input type="text" name="name" placeholder="Enter Name " value="${product.getNameProduct()}"></td>
+            <td><input type="text" name="name" placeholder="Enter Name "  />" ></td>
         </tr>
         <tr>
             <td>Price</td>
-            <td><input type="text" name="price" placeholder="Enter Price" value="${product.getPriceProduct()}"></td>
+            <td><input type="text" name="price" placeholder="Enter Price" />" ></td>
         </tr>
         <tr>
             <td>Description</td>
-            <td><input type="text" name="description" placeholder="Enter Description" value="${product.getDescriptionProduct()}"></td>
+            <td><input type="text" name="description" placeholder="Enter Description"  />"  ></td>
         </tr>
         <tr>
             <td>Producer</td>
-            <td><input type="text" name="producer" placeholder="Enter Producer" value="${product.getProducer()}"></td>
+            <td><input type="text" name="producer" placeholder="Enter Producer"  />" ></td>
         </tr>
         <tr>
-            <td><button type="submit" >Update</button></td>
+            <td><input type="submit" value="Update"></td>
         </tr>
     </table>
 </form>

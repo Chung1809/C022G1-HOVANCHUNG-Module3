@@ -35,7 +35,7 @@
         <td>${product.priceProduct}</td>
         <td>${product.descriptionProduct}</td>
         <td>${product.producer}</td>
-         <td><a href="/product?action=edit">Edit</a></td>
+         <td><a href="/product?action=edit&id=${product.id}">Edit</a></td>
          <td><a href="/product?action=delete">Delete</a></td>
     </tr>
 

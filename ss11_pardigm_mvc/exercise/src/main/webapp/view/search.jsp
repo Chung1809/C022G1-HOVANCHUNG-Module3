@@ -17,31 +17,15 @@
 <c:if test="${mess!=null}">
     <p>${mess}</p>
 </c:if>
-<form action="/product" method="post">
+<form action="/product?action=search" method="post">
     <table>
-        <c:forEach items="${productFindList}" var="productFind">
-            <tr>
-                <td>ID</td>
-                <td>${productFind.getId()}</td>
-            </tr>
-            <tr>
-                <td>Name</td>
-                <td>${productFind.getNameProduct()}</td>
-            </tr>
-            <tr>
-                <td>Price</td>
-                <td>${productFind.getPriceProduct()}</td>
-            </tr>
-            <tr>
-                <td>Description</td>
-                <td>${productFind.getdescription()}</td>
-            </tr>
-            <tr>
-                <td>Producer</td>
-                <td>${productFind.getproducer()}</td>
-            </tr>
-
-        </c:forEach>
+        <tr>
+            <td>Name</td>
+            <input type="text" name="name">
+        </tr>
+        <tr>
+            <td><button type="submit"  >Search</button></td>
+        </tr>
     </table>
 </form>
 </body>

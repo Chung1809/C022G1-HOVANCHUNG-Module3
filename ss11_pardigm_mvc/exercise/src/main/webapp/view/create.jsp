@@ -17,7 +17,7 @@
 <c:if test="${mess!=null}">
     <p>${mess}</p>
 </c:if>
-<form action="/product" method="post">
+<form action="/product?action=add" method="post">
     <table>
         <tr>
             <td>ID</td>
