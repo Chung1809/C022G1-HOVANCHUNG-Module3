@@ -111,7 +111,7 @@ insert into kieu_thue values(null,"Year");
 insert into kieu_thue(ten_kieu_thue) values("Month"),("Day"),("Hour");
 
 select*from khach_hang;
-insert into khach_hang values(null,1,"Hồ Quốc Đạt","2000-03-26",1,"01656165","0165161516","supperman1809@gmail.com","Đà Nẵng");
+insert into khach_hang values(null,1,"Nguyễn Thị Hào","1970-11-07",1,"01656165","0165161516","supperman1809@gmail.com","Đà Nẵng");
 insert into khach_hang(ma_loai_khach,ho_ten,ngay_sinh,gioi_tinh,so_cmnd,so_dien_thoai,email,dia_chi) 
 values(2,"Hồ Quỳnh Hương ","2000-04-26",1,"016561645","016589161516","abc@gmail.com","Đà Nẵng"),
 (3,"Phạm Xuân Diệu ","2000-05-26",1,"016561645","016589161516","abcd@gmail.com","Đà Nẵng"),
@@ -204,12 +204,13 @@ order by so_lan_dat_phong;
 -- hàm coalesce nếu null thì set giá trị về 0 (tự cho)
 select k_h.ma_khach_hang,k_h.ho_ten,l_k.ten_loai_khach,h_d.ma_hop_dong,d_v.ten_dich_vu,h_d.ngay_lam_hop_dong,h_d.ngay_ket_thuc,
 sum(d_v.chi_phi_thue +coalesce(( h_d_c_t.so_luong*d_v_d_k.gia),0) )as tong_tien
-from khach_hang k_h join loai_khach l_k on k_h.ma_loai_khach = l_k.ma_loai_khach
-join hop_dong h_d on h_d.ma_khach_hang = k_h.ma_khach_hang
-join dich_vu d_v on  d_v.ma_dich_vu = h_d.ma_dich_vu
-join hop_dong_chi_tiet h_d_c_t on h_d_c_t.ma_hop_dong = h_d.ma_hop_dong
-join dich_vu_di_kem d_v_d_k on d_v_d_k.ma_dich_vu_di_kem = h_d_c_t.ma_dich_vu_di_kem
-group by h_d.ma_hop_dong
+from khach_hang k_h 
+left join loai_khach l_k on k_h.ma_loai_khach = l_k.ma_loai_khach
+left join hop_dong h_d on h_d.ma_khach_hang = k_h.ma_khach_hang
+left join dich_vu d_v on  d_v.ma_dich_vu = h_d.ma_dich_vu 
+left join hop_dong_chi_tiet h_d_c_t on h_d_c_t.ma_hop_dong = h_d.ma_hop_dong
+left join dich_vu_di_kem d_v_d_k on d_v_d_k.ma_dich_vu_di_kem = h_d_c_t.ma_dich_vu_di_kem
+group by k_h.ma_khach_hang
 order by k_h.ma_khach_hang;
 -- Task 6--
 select distinct d_v.ma_dich_vu,d_v.ten_dich_vu,d_v.dien_tich,d_v.chi_phi_thue,l_d_v.ten_loai_dich_vu 
@@ -273,12 +274,13 @@ group by h_d.ma_hop_dong;
 
 
 -- Task 13--
-select d_v_d_k.ma_dich_vu_di_kem ,d_v_d_k.ten_dich_vu_di_kem, sum(h_d_c_t.so_luong) as so_luong_dich_vu_di_kem from
-hop_dong h_d join khach_hang k_h on h_d.ma_khach_hang=k_h.ma_khach_hang
-join hop_dong_chi_tiet h_d_c_t on h_d_c_t.ma_hop_dong = h_d.ma_hop_dong
-join dich_vu_di_kem d_v_d_k on d_v_d_k.ma_dich_vu_di_kem = h_d_c_t.ma_dich_vu_di_kem
+select d_v_d_k.ma_dich_vu_di_kem, d_v_d_k.ten_dich_vu_di_kem, sum(h_d_c_t.so_luong) as so_luong_dich_vu_di_kem from dich_vu_di_kem d_v_d_k
+join hop_dong_chi_tiet h_d_c_t on d_v_d_k.ma_dich_vu_di_kem = h_d_c_t.ma_dich_vu_di_kem
+join hop_dong h_d on h_d_c_t.ma_hop_dong = h_d.ma_hop_dong
 group by d_v_d_k.ma_dich_vu_di_kem
-order by sum(h_d_c_t.so_luong) desc limit 0,2;
+having sum(h_d_c_t.so_luong) = (select sum(h_d_c_t.so_luong) from hop_dong_chi_tiet h_d_c_t
+group by h_d_c_t.ma_dich_vu_di_kem 
+order by sum(h_d_c_t.so_luong) desc limit 1);
 
 -- Task 14 --
 select h_d.ma_hop_dong,l_d_v.ten_loai_dich_vu,d_v_d_k.ten_dich_vu_di_kem,count(d_v_d_k.ma_dich_vu_di_kem) as so_lan_su_dung
@@ -302,7 +304,8 @@ order by n_v.ma_nhan_vien;
 
 -- Task 16--
 delete from nhan_vien n_v
-where n_v.ma_nhan_vien not in(select n_v.ma_nhan_vien from hop_dong h_d where year(h_d.ngay_lam_hop_dong) between 2019 and 2021);
+where ma_nhan_vien not in(select ma_nhan_vien from hop_dong h_d where year(h_d.ngay_lam_hop_dong) between 2019 and 2021);
+
 
 
 -- Task 17--
@@ -321,24 +324,78 @@ from
  group by k_h.ma_khach_hang
  having (sum((d_v.chi_phi_thue + coalesce((h_d_c_t.so_luong*d_v_d_k.gia),0))) > 10000000))as ma_loai_khach);
  
+
+ 
  select*from khach_hang;
  select*from loai_khach;
  select*from hop_dong;
  
  -- Task 18--
- 
+
+ create view khach_hang_can_xoa as
+ select h_d.ma_khach_hang , h_d.ngay_lam_hop_dong from hop_dong h_d
+ where year(h_d.ngay_lam_hop_dong) < 2021
+ group by h_d.ma_khach_hang;
+ -- Cho id giá trị null
+ alter table hop_dong  modify ma_khach_hang int;
+ -- Xoá cái khoá ngoại tham chiếu tới hợp đồng và nếu tìm thì vào trong hợp đồng
+ alter table hop_dong  drop foreign key hop_dong_ibfk_2 ;
+  -- Thêm mới khoá ngoại vào giẵ khách hàng và mã khách hàng , nếu xoá mã khách hàng thì mã đó ở bên hợp đồng sẽ là giá trị null
+ alter table hop_dong add foreign key(ma_khach_hang) references khach_hang(ma_khach_hang) on delete set null;
+ -- Xoá dữ liệu khách hàng trong bảng view
+ delete from khach_hang where ma_khach_hang in(select ma_khach_hang from khach_hang_can_xoa);
  
  -- Task 19 --
- create view so_luong as
- select d_v_d_k.ma_dich_vu_di_kem ,d_v_d_k.ten_dich_vu_di_kem,d_v_d_k.gia,h_d_c_t.so_luong, h_d.ma_hop_dong from hop_dong_chi_tiet h_d_c_t
+ 
+ update dich_vu_di_kem d_v_d_k
+ set d_v_d_k.gia = d_v_d_k.gia*2
+ where d_v_d_k.gia in(select gia from
+ (select d_v_d_k.ma_dich_vu_di_kem ,d_v_d_k.ten_dich_vu_di_kem,d_v_d_k.gia,h_d_c_t.so_luong, h_d.ma_hop_dong from hop_dong_chi_tiet h_d_c_t
  join hop_dong h_d on h_d_c_t.ma_hop_dong = h_d.ma_hop_dong
  join dich_vu_di_kem d_v_d_k on d_v_d_k.ma_dich_vu_di_kem = h_d_c_t.ma_dich_vu_di_kem
  join dich_vu d_v on d_v.ma_dich_vu = h_d.ma_dich_vu
  where h_d_c_t.so_luong > 10 and year(h_d.ngay_lam_hop_dong) = 2020
- group by h_d_c_t.so_luong;
- update dich_vu_di_kem d_v_d_k
- set d_v_d_k.gia = d_v_d_k.gia*2
- where d_v_d_k.ma_dich_vu_di_kem in(select d_v_d_k.ma_dich_vu_di_kem from so_luong);
+ group by h_d_c_t.so_luong) as gia);
+ 
+ select*from dich_vu_di_kem;
+ 
+ -- Task 20--
+ select k_h.ma_khach_hang,k_h.ho_ten,k_h.email,k_h.so_dien_thoai,k_h.ngay_sinh,k_h.dia_chi from khach_hang k_h
+ union all
+ select  n_v.ma_nhan_vien,n_v.ho_ten,n_v.email,n_v.so_dien_thoai,n_v.ngay_sinh,n_v.dia_chi from nhan_vien n_v;
+ 
+ -- Task 21  --
+ 
+ create view p_nhan_vien as 
+ select* from nhan_vien n_v
+ where n_v.dia_chi like "%Đà Nẵng%" and ma_nhan_vien in(select ma_nhan_vien from hop_dong h_d where date(h_d.ngay_lam_hop_dong) = "2021-04-25");
+ select* from p_nhan_vien;
+ 
+ -- Task 22 --
+ update p_nhan_vien 
+ set p_nhan_vien.dia_chi = "Liên Chiểu"
+ where p_nhan_vien.dia_chi like "%Đà Nẵng%";
+ 
+ -- Task 23--
+ 
+ delimiter $$
+ create procedure sp_xoa_khach_hang()
+ begin
+ select* from khach_hang;
+ end $$
+ delimiter ;
+ call sp_xoa_khach_hang()
+ 
+ delimiter $$
+ create procedure remove_khach_hang (IN kh_id int)
+ begin
+ delete from khach_hang k_h
+ where k_h.ma_khach_hang = kh_id;
+ end $$
+ delimiter ;
+ 
+ call remove_khach_hang(2);
+ 
  
 
  
